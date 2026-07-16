@@ -1,34 +1,39 @@
 # Quiz CLI
 
-Aplicación interactiva de línea de comandos construida con Node.js para evaluar conocimientos de programación mediante cuestionarios por categorías. El repositorio contiene una implementación sencilla orientada a consola, con preguntas almacenadas en un archivo JSON y lógica modular separada para entrada de usuario, presentación visual y flujo del juego.
+Aplicación de línea de comandos desarrollada con Node.js para ejecutar un cuestionario interactivo sobre programación. El proyecto carga preguntas desde un archivo JSON, permite seleccionar una categoría y la cantidad de preguntas a responder, evalúa cada respuesta en tiempo real y muestra un resumen final con la puntuación obtenida.
 
 ## Descripción general
 
-Este proyecto resuelve un caso de uso educativo: ejecutar quizzes desde terminal sin dependencias externas. La aplicación permite al usuario:
+Este repositorio contiene una aplicación educativa orientada a terminal. Su propósito es ofrecer un quiz interactivo para practicar conceptos de programación y, al mismo tiempo, servir como ejemplo sencillo de una aplicación Node.js estructurada por módulos.
 
-- seleccionar una categoría de preguntas;
-- elegir cuántas preguntas responder;
-- contestar cada pregunta desde la terminal;
-- recibir retroalimentación inmediata;
-- ver un resumen final con puntuación y revisión de respuestas incorrectas;
-- reiniciar la experiencia para volver a jugar.
+A partir del código fuente se identificó que la aplicación:
 
-A partir del código fuente, se identificó que el proyecto también funciona como ejemplo didáctico de características modernas de JavaScript y Node.js, incluyendo ES Modules, `async/await`, lectura de archivos JSON, manejo de entrada por consola y programación orientada a objetos.
+- carga preguntas desde un archivo local JSON;
+- organiza el contenido por categorías;
+- permite al usuario elegir categoría y cantidad de preguntas;
+- presenta preguntas de opción múltiple por consola;
+- valida respuestas y muestra retroalimentación inmediata;
+- imprime un resultado final con porcentaje de aciertos;
+- permite reiniciar la experiencia para volver a jugar.
+
+También funciona como ejemplo de uso de características modernas de JavaScript y Node.js, incluyendo ES Modules, `async/await`, lectura de archivos con `fs/promises`, manejo de entrada estándar con `readline` y encapsulación de lógica mediante clases.
 
 ## Características
 
 - Interfaz interactiva en terminal.
 - Selección de categoría de preguntas.
-- Selección de cantidad de preguntas (`All questions`, `3 questions`, `5 questions`, según disponibilidad).
-- Carga de preguntas desde `data/questions.json`.
-- Orden aleatorio de preguntas mediante el algoritmo Fisher-Yates.
-- Validación de entrada del usuario para opciones numéricas.
-- Retroalimentación inmediata sobre respuestas correctas e incorrectas.
-- Barra de progreso durante el quiz.
-- Resumen final con porcentaje de aciertos.
-- Revisión de preguntas incorrectas al finalizar.
-- Posibilidad de jugar nuevamente sin reiniciar manualmente el proceso.
-- Salida coloreada mediante códigos ANSI sin librerías externas.
+- Selección del número de preguntas según disponibilidad.
+- Preguntas de opción múltiple.
+- Carga de datos desde `data/questions.json`.
+- Mezcla aleatoria de preguntas usando Fisher-Yates.
+- Validación de entrada numérica del usuario.
+- Feedback inmediato sobre respuestas correctas e incorrectas.
+- Explicaciones asociadas a cada pregunta.
+- Barra de progreso durante la partida.
+- Resumen final con puntuación y porcentaje.
+- Revisión de respuestas incorrectas.
+- Opción para jugar nuevamente.
+- Colores ANSI sin dependencias externas.
 
 ## Tecnologías utilizadas
 
@@ -36,122 +41,189 @@ A partir del código fuente, se identificó que el proyecto también funciona co
 
 - JavaScript (ES Modules)
 - JSON
+- Markdown
+
+### Frameworks
+
+- No se identificaron frameworks a partir del código fuente.
+
+### Librerías y módulos principales
+
+Todos los módulos utilizados en la aplicación son nativos de Node.js:
+
+- `node:fs/promises`
+- `node:path`
+- `node:url`
+- `node:readline`
 
 ### Runtime
 
 - Node.js `>=18.0.0`
 
-### APIs y módulos utilizados
+### Base de datos
 
-Todos los módulos identificados son nativos de Node.js:
-
-- `node:fs/promises` para lectura asíncrona del archivo de preguntas.
-- `node:path` para resolver rutas de archivos.
-- `node:url` para obtener la ruta del módulo actual en entorno ES Modules.
-- `node:readline` para interacción por consola.
-
-### Dependencias
-
-No se identificaron dependencias externas en `package.json`.
+- No se utiliza una base de datos.
+- La persistencia del contenido del cuestionario se realiza mediante el archivo `test-app/test-app/data/questions.json`.
 
 ### Herramientas
 
-- npm para ejecución de scripts.
-- Node.js Test Runner configurado mediante el script `node --test`.
+- npm
+- Node.js Test Runner (`node --test`)
+
+### Infraestructura
+
+- No se identificaron contenedores, orquestación, infraestructura como código ni configuración de despliegue a partir del repositorio analizado.
 
 ## Arquitectura
 
-La arquitectura identificada es la de una aplicación CLI monolítica, modularizada por responsabilidades:
+La arquitectura identificada es una aplicación CLI monolítica y local, dividida en módulos con responsabilidades separadas.
 
-- **Entrada principal (`index.js`)**: inicializa la aplicación, carga preguntas, coordina el flujo del juego y maneja errores.
-- **Módulo de entrada (`src/input.js`)**: abstrae el uso de `readline` para preguntar, confirmar y seleccionar opciones.
-- **Lógica de dominio (`src/quiz.js`)**: implementa la clase `Quiz`, el progreso, el puntaje, la evaluación de respuestas y la visualización de resultados.
-- **Presentación (`src/colors.js`)**: encapsula estilos ANSI para mejorar la salida en terminal.
-- **Datos (`data/questions.json`)**: almacena categorías, preguntas, opciones, respuesta correcta y explicación.
+### Componentes principales
 
-### Flujo general
+- **`test-app/test-app/index.js`**
+  - Punto de entrada de la aplicación.
+  - Carga el archivo de preguntas.
+  - Controla el flujo principal del juego.
+  - Maneja selección de categoría, cantidad de preguntas y reinicio.
 
-1. La aplicación inicia desde `index.js`.
-2. Se cargan las preguntas desde `data/questions.json`.
-3. El usuario selecciona una categoría.
-4. El usuario elige la cantidad de preguntas disponibles para esa categoría.
-5. Se instancia `Quiz` con las preguntas seleccionadas.
-6. Cada pregunta se presenta por consola y se registra la respuesta.
-7. Se muestra retroalimentación inmediata y explicación.
-8. Al finalizar, se imprime el resultado general y la revisión de errores.
-9. El usuario decide si desea volver a jugar.
+- **`test-app/test-app/src/quiz.js`**
+  - Implementa la clase `Quiz`.
+  - Gestiona el estado del juego, el orden de preguntas, la puntuación, el progreso y los resultados.
+
+- **`test-app/test-app/src/input.js`**
+  - Encapsula el uso de `readline`.
+  - Implementa prompts, selección de opciones, confirmaciones y pausas por Enter.
+
+- **`test-app/test-app/src/colors.js`**
+  - Gestiona el formateo visual de la salida por consola usando secuencias ANSI.
+
+- **`test-app/test-app/data/questions.json`**
+  - Almacena categorías, preguntas, opciones, índices de respuesta correcta y explicaciones.
+
+### Frontend
+
+- No existe frontend web.
+- La interfaz de usuario es exclusivamente por terminal.
+
+### Backend
+
+- No existe backend HTTP ni servicio remoto.
+- Toda la lógica se ejecuta localmente dentro del proceso de Node.js.
+
+### APIs
+
+- No se identificaron APIs REST, GraphQL ni endpoints HTTP.
+
+### Persistencia
+
+- Persistencia basada en archivo JSON local.
+
+### Comunicación entre componentes
+
+- Importaciones ES Modules entre archivos JavaScript.
+- Entrada y salida estándar (`stdin` / `stdout`) para la interacción con el usuario.
+
+### Flujo general de funcionamiento
+
+```text
+Usuario
+  ↓
+CLI por terminal
+  ↓
+index.js
+  ├─ carga questions.json
+  ├─ usa input.js para interacción
+  ├─ usa quiz.js para lógica del juego
+  └─ usa colors.js para salida formateada
+```
 
 ## Estructura del proyecto
 
 ```text
 .
-├── README.md
+├── README.md                         # Documentación principal del repositorio
 └── test-app/
     └── test-app/
-        ├── index.js              # Punto de entrada de la aplicación CLI
-        ├── package.json          # Metadatos del proyecto y scripts npm
+        ├── index.js                 # Punto de entrada de la aplicación CLI
+        ├── package.json             # Metadatos, scripts y requisito de Node.js
         ├── data/
-        │   └── questions.json    # Banco de preguntas y categorías
+        │   └── questions.json       # Banco de preguntas y categorías
         └── src/
-            ├── colors.js         # Utilidades para colorear la salida en terminal
-            ├── input.js          # Manejo de entrada interactiva con readline
-            └── quiz.js           # Clase principal del quiz y resultados
+            ├── colors.js            # Utilidades de color para la terminal
+            ├── input.js             # Manejo de entrada interactiva del usuario
+            └── quiz.js              # Lógica principal del cuestionario
 ```
 
-> La aplicación fuente se encuentra dentro de `test-app/test-app`, no en la raíz del repositorio.
+> El código ejecutable del proyecto se encuentra dentro de `test-app/test-app`.
 
 ## Requisitos previos
 
 - Node.js `>=18.0.0`
 - npm
-- Una terminal compatible con salida ANSI para visualizar colores correctamente
+- Terminal compatible con aplicaciones interactivas de Node.js
+- Soporte para salida ANSI si se desea ver colores en consola
 
 ## Instalación
 
 1. Clona el repositorio:
 
-   ```bash
-   git clone https://github.com/oddiemva/test-app.git
-   ```
+```bash
+git clone https://github.com/oddiemva/test-app.git
+```
 
-2. Entra al directorio de la aplicación:
+2. Accede al directorio de la aplicación:
 
-   ```bash
-   cd test-app/test-app/test-app
-   ```
+```bash
+cd test-app/test-app
+```
 
 3. Instala dependencias:
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-> No se identificaron dependencias de terceros, pero `npm install` permite preparar el proyecto de acuerdo con `package.json`.
+### Nota sobre dependencias
+
+A partir de `package.json`, no se identificaron dependencias ni dependencias de desarrollo externas. La aplicación utiliza exclusivamente módulos nativos de Node.js.
 
 ## Configuración
 
 ### Variables de entorno
 
-No se encontraron archivos `.env`, `.env.example` ni referencias a variables de entorno en el código fuente analizado.
+- No se encontraron archivos `.env`, `.env.example` ni referencias a variables de entorno en el código fuente.
 
 ### Archivos de configuración
 
-- `package.json`: define nombre, versión, scripts, licencia y versión mínima de Node.js.
-- `data/questions.json`: archivo de contenido con categorías y preguntas del quiz.
+- **`test-app/test-app/package.json`**
+  - Define el nombre del paquete (`quiz-cli`), versión, scripts, licencia y versión mínima de Node.js.
+
+- **`test-app/test-app/data/questions.json`**
+  - Define el contenido del cuestionario.
 
 ### Parámetros importantes
 
-No se identificaron parámetros CLI, flags ni archivos de configuración adicionales.
+No se identificaron flags de línea de comandos ni parámetros externos configurables.
+
+El comportamiento del quiz depende de la estructura de `questions.json`, que contiene:
+
+- `categories`: conjunto de categorías disponibles;
+- `name`: nombre visible de la categoría;
+- `questions`: lista de preguntas de la categoría;
+- `question`: texto de la pregunta;
+- `options`: opciones de respuesta;
+- `answer`: índice numérico de la opción correcta;
+- `explanation`: explicación mostrada tras responder.
 
 ## Ejecución
 
-Desde el directorio `test-app/test-app` puedes iniciar la aplicación con cualquiera de estos comandos:
+Desde `test-app/test-app`:
 
 ```bash
 npm start
 ```
 
-O directamente con Node.js:
+Comando equivalente definido en `package.json`:
 
 ```bash
 node index.js
@@ -159,16 +231,31 @@ node index.js
 
 ## Ejemplos de uso
 
-### Flujo esperado en consola
+### Flujo esperado en terminal
 
-1. Se muestra un banner de bienvenida.
-2. Se listan las categorías disponibles:
-   - JavaScript Basics
-   - Node.js Fundamentals
-   - General Programming
-3. Se solicita el número de preguntas.
-4. Se responde cada pregunta introduciendo el número de la opción.
-5. Se muestra el resultado final con puntaje y recomendaciones.
+1. La aplicación muestra un banner de bienvenida.
+2. Solicita elegir una categoría.
+3. Solicita elegir cuántas preguntas responder.
+4. Inicia el cuestionario tras una pausa con Enter.
+5. Muestra cada pregunta con opciones numeradas.
+6. Indica si la respuesta fue correcta o incorrecta.
+7. Muestra una explicación, si existe.
+8. Al finalizar, presenta el resultado final y pregunta si se desea volver a jugar.
+
+### Categorías identificadas
+
+A partir de `questions.json`, el proyecto incluye estas categorías:
+
+- JavaScript Basics
+- Node.js Fundamentals
+- General Programming
+
+### Ejemplo de inicio
+
+```bash
+cd test-app/test-app
+npm start
+```
 
 ### Ejemplo de interacción
 
@@ -194,32 +281,36 @@ Your choice (enter number): 2
 
 ## Scripts disponibles
 
-Los scripts definidos en `package.json` son:
+Los scripts definidos en `test-app/test-app/package.json` son:
 
 | Script | Comando | Descripción |
 |---|---|---|
-| `start` | `node index.js` | Inicia la aplicación interactiva del quiz. |
+| `start` | `node index.js` | Inicia la aplicación de cuestionario en la terminal. |
 | `test` | `node --test` | Ejecuta el runner de pruebas nativo de Node.js. |
 
 ## Pruebas
 
-El proyecto define el siguiente comando de prueba:
+Para ejecutar las pruebas definidas por el proyecto:
 
 ```bash
 npm test
 ```
 
-No se encontraron archivos de prueba ni directorios de tests en el repositorio analizado. Por lo tanto, no se pudo determinar a partir del código fuente qué cobertura de pruebas existe realmente.
+### Observaciones
+
+- Existe un script de pruebas configurado.
+- No se identificaron archivos de prueba en el repositorio analizado.
+- No se pudo determinar a partir del código fuente qué casos de prueba están implementados realmente.
 
 ## Despliegue
 
-No se encontraron archivos ni configuraciones de despliegue como `Dockerfile`, `docker-compose.yml`, workflows de GitHub Actions, infraestructura como código o scripts de publicación.
-
-No se pudo determinar a partir del código fuente un proceso formal de despliegue. El proyecto parece estar pensado para ejecución local en terminal.
+- No se identificó un proceso formal de despliegue.
+- No se encontraron `Dockerfile`, `docker-compose.yml`, workflows de GitHub Actions, archivos de infraestructura ni scripts de publicación.
+- El proyecto parece estar orientado a ejecución local como aplicación CLI.
 
 ## Datos del cuestionario
 
-El banco de preguntas actual está organizado en tres categorías:
+El archivo `test-app/test-app/data/questions.json` organiza el contenido en tres categorías:
 
 - **JavaScript Basics**
 - **Node.js Fundamentals**
@@ -228,28 +319,34 @@ El banco de preguntas actual está organizado en tres categorías:
 Cada pregunta contiene:
 
 - enunciado;
-- lista de opciones;
-- índice de la respuesta correcta;
-- explicación mostrada tras responder.
+- opciones disponibles;
+- índice de respuesta correcta;
+- explicación posterior a la respuesta.
+
+Para ampliar el cuestionario, se pueden agregar nuevas categorías o preguntas respetando esta estructura.
 
 ## Contribución
 
-No se encontró una guía formal de contribución (`CONTRIBUTING.md`). A partir de la estructura del proyecto, una contribución razonable podría seguir este flujo:
+No se encontró un archivo `CONTRIBUTING.md`. A partir de la estructura actual del proyecto, un flujo razonable para colaborar sería:
 
-1. Crear una rama de trabajo.
-2. Realizar cambios en la lógica, preguntas o experiencia CLI.
-3. Ejecutar la aplicación localmente.
+1. Crear una rama para el cambio.
+2. Modificar la lógica de la aplicación o el contenido de `questions.json`.
+3. Ejecutar la aplicación localmente con `npm start`.
 4. Ejecutar `npm test`.
-5. Abrir un Pull Request.
+5. Abrir un Pull Request describiendo el cambio realizado.
 
-Si se agregan nuevas preguntas, deben mantener la estructura actual de `data/questions.json`.
+### Consideraciones para contribuir
+
+- Mantener el formato actual de `questions.json`.
+- Conservar la compatibilidad con Node.js `>=18.0.0`.
+- Mantener el estilo modular existente en `src/`.
 
 ## Licencia
 
 El archivo `package.json` declara licencia **MIT**.
 
-No se encontró un archivo `LICENSE` separado en el repositorio analizado.
+No se encontró un archivo `LICENSE` independiente en el repositorio analizado.
 
 ## Autoría
 
-No se pudo determinar a partir del código fuente quién es el autor o mantenedor del proyecto.
+No se pudo determinar la autoría o los mantenedores a partir del código fuente analizado.
